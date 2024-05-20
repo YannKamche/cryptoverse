@@ -1,24 +1,29 @@
-import React, { useEffect, useState } from 'react'
-import millify from 'millify'
-import { Link } from 'react-router-dom'
-import { Card, Row, Col, Input } from 'antd'
+import React, { useEffect, useState } from "react";
+import millify from "millify";
+import { Link } from "react-router-dom";
+import { Card, Row, Col, Input } from "antd";
 
-import { useGetCryptosQuery } from '../services/cryptoApi'
+import { useGetCryptosQuery } from "../services/cryptoApi";
 
 const Cryptocurrencies = ({ simplified }) => {
-  //count variable
+  // count variable
   const count = simplified ? 10 : 100;
 
-  //fetch the data
+  // fetch the data
   const { data: cryptosList, isFetching } = useGetCryptosQuery(count);
 
-  //Manages the state of the fetched data
-  const [cryptos, setCryptos] = useState([]); //We leave the initial state as an empty array because of the useEffect
+  // Manages the state of the fetched data
+  const [cryptos, setCryptos] = useState([]); // We leave the initial state as an empty array because of the useEffect
 
-  //Manages the state of the input field
+  // Manages the state of the input field
   const [searchTerm, setSearchTerm] = useState("");
 
-  /*useEffect hook to manage the rendering. It is a combination of the componentDidMount (happening at the start) and componentDidUpdate 
+  // Function to handle the input change
+  const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value);
+  };
+
+  /* useEffect hook to manage the rendering. It is a combination of the componentDidMount (happening at the start) and componentDidUpdate 
   (for the two properties in the array passed as second argument) to the useEffect hook */
   useEffect(() => {
     const filteredData = cryptosList?.data?.coins.filter((coin) =>
@@ -26,17 +31,18 @@ const Cryptocurrencies = ({ simplified }) => {
     );
 
     setCryptos(filteredData);
-  }, [cryptosList, searchTerm]); //Only re-renders when any of the two items in the array change
+  }, [cryptosList, searchTerm]); // Only re-renders when any of the two items in the array change
 
   if (isFetching) return "Loading ...";
+
   return (
     <>
-      {/* Input field to filter out crypto currencies */}
+      {/* Input field to filter out cryptocurrencies */}
       {!simplified && (
         <div className="search-crypto">
           <Input
             placeholder="Search Cryptocurrency"
-            onChange={(e) => setSearchTerm(e.target.value)}
+            onChange={handleSearchChange}
           />
         </div>
       )}
@@ -59,6 +65,6 @@ const Cryptocurrencies = ({ simplified }) => {
       </Row>
     </>
   );
-}
+};
 
-export default Cryptocurrencies
+export default Cryptocurrencies;
