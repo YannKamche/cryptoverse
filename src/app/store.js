@@ -1,13 +1,21 @@
-//A store is one central state of truth
+// store.js
+
 import { configureStore } from "@reduxjs/toolkit";
-
-//import the API
 import { cryptoApi } from "../services/cryptoApi";
+import { cryptoNewsApi } from "../services/cryptoNewsApi";
+import { setupListeners } from "@reduxjs/toolkit/query";
 
-export default configureStore({
-    reducer: {
-        [cryptoApi.reducerPath]: cryptoApi.reducer,
-    },
-    middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(cryptoApi.middleware),
+const store = configureStore({
+  reducer: {
+    [cryptoApi.reducerPath]: cryptoApi.reducer,
+    [cryptoNewsApi.reducerPath]: cryptoNewsApi.reducer,
+  },
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware()
+      .concat(cryptoApi.middleware)
+      .concat(cryptoNewsApi.middleware),
 });
+
+setupListeners(store.dispatch);
+
+export default store;
