@@ -34,7 +34,6 @@ const Cryptocurrencies = ({ simplified }) => {
   }, [cryptosList, searchTerm]); // Only re-renders when any of the two items in the array change
 
   if (isFetching) return "Loading ...";
-
   return (
     <>
       {/* Input field to filter out cryptocurrencies */}
@@ -48,16 +47,23 @@ const Cryptocurrencies = ({ simplified }) => {
       )}
       <Row gutter={[16, 16]} className="crypto-card-container">
         {cryptos?.map((currency) => (
-          <Col xs={24} sm={12} lg={6} className="crypto-card" key={currency.id}>
-            <Link to={`/crypto/${currency.id}`}>
+          <Col
+            xs={24}
+            sm={12}
+            lg={6}
+            className="crypto-card"
+            key={currency.uuid}
+          >
+            {/* Note: Change currency.id to currency.uuid  */}
+            <Link key={currency.uuid} to={`/crypto/${currency.uuid}`}>
               <Card
                 title={`${currency.rank}. ${currency.name}`}
                 extra={<img className="crypto-image" src={currency.iconUrl} />}
                 hoverable
               >
                 <p>Price: {millify(currency.price)}</p>
-                <p>Market: {millify(currency.marketCap)}</p>
-                <p>Daily Change: {millify(currency.change)}%</p>
+                <p>Market Cap: {millify(currency.marketCap)}</p>
+                <p>Daily Change: {currency.change}%</p>
               </Card>
             </Link>
           </Col>
