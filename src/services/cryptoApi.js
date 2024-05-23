@@ -17,12 +17,18 @@ export const cryptoApi = createApi({
     }),
     //Add an extra service
     getCryptoDetails: builder.query({
-      query: (coinId) => createRequest(`/coins/${coinId}`)
-    })
+      query: (coinId) => createRequest(`/coins/${coinId}`),
+    }),
+    //Add another end point for the chart
+    getCryptoHistory: builder.query({
+      query: (coinId, timePeriod) => createRequest(`/coin/${coinId}/history/${timePeriod}`),
+    }),
   }),
 });
 
 export const {
     useGetCryptosQuery, //redux query creates a hook that you can use for all queries
-    useGetCryptoDetailsQuery
+  useGetCryptoDetailsQuery,
+  useGetCryptoHistoryQuery
+    
 } = cryptoApi;
