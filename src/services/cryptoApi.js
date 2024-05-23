@@ -21,7 +21,13 @@ export const cryptoApi = createApi({
     }),
     //Add another end point for the chart
     getCryptoHistory: builder.query({
-      query: (coinId, timePeriod) => createRequest(`/coin/${coinId}/history/${timePeriod}`),
+      query: ({ coinId, timeperiod }) =>
+        createRequest(`coin/${coinId}/history?timeperiod=${timeperiod}`),
+    }),
+
+    // Note: To access this endpoint you need premium plan
+    getExchanges: builder.query({
+      query: () => createRequest("/exchanges"),
     }),
   }),
 });
@@ -29,6 +35,7 @@ export const cryptoApi = createApi({
 export const {
     useGetCryptosQuery, //redux query creates a hook that you can use for all queries
   useGetCryptoDetailsQuery,
-  useGetCryptoHistoryQuery
+  useGetCryptoHistoryQuery,
+  useGetExchangesQuery,
     
 } = cryptoApi;

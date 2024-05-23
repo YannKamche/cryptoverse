@@ -1,51 +1,38 @@
-import React, { useEffect, useState } from "react";
-import millify from "millify";
-import { Link } from "react-router-dom";
-import { Card, Row, Col, Input } from "antd";
+import React, { useEffect, useState } from 'react';
+import millify from 'millify';
+import { Link } from 'react-router-dom';
+import { Card, Row, Col, Input } from 'antd';
 
-import { useGetCryptosQuery } from "../services/cryptoApi";
+import { useGetCryptosQuery } from '../services/cryptoApi';
+import Loader from './Loader';
 
 const Cryptocurrencies = ({ simplified }) => {
-  // count variable
   const count = simplified ? 10 : 100;
-
-  // fetch the data
   const { data: cryptosList, isFetching } = useGetCryptosQuery(count);
+  const [cryptos, setCryptos] = useState();
+  const [searchTerm, setSearchTerm] = useState('');
 
-  // Manages the state of the fetched data
-  const [cryptos, setCryptos] = useState([]); // We leave the initial state as an empty array because of the useEffect
-
-  // Manages the state of the input field
-  const [searchTerm, setSearchTerm] = useState("");
-
-  // Function to handle the input change
-  const handleSearchChange = (e) => {
-    setSearchTerm(e.target.value);
-  };
-
-  /* useEffect hook to manage the rendering. It is a combination of the componentDidMount (happening at the start) and componentDidUpdate 
-  (for the two properties in the array passed as second argument) to the useEffect hook */
   useEffect(() => {
-    const filteredData = cryptosList?.data?.coins.filter((coin) =>
-      coin.name.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    setCryptos(cryptosList?.data?.coins);
+
+    const filteredData = cryptosList?.data?.coins.filter((item) => item.name.toLowerCase().includes(searchTerm));
 
     setCryptos(filteredData);
-  }, [cryptosList, searchTerm]); // Only re-renders when any of the two items in the array change
+  }, [cryptosList, searchTerm]);
 
-  if (isFetching) return "Loading ...";
+  if (isFetching) return <Loader />;
+
   return (
     <>
-      {/* Input field to filter out cryptocurrencies */}
       {!simplified && (
         <div className="search-crypto">
           <Input
             placeholder="Search Cryptocurrency"
-            onChange={handleSearchChange}
+            onChange={(e) => setSearchTerm(e.target.value.toLowerCase())}
           />
         </div>
       )}
-      <Row gutter={[16, 16]} className="crypto-card-container">
+      <Row gutter={[32, 32]} className="crypto-card-container">
         {cryptos?.map((currency) => (
           <Col
             xs={24}
@@ -54,6 +41,7 @@ const Cryptocurrencies = ({ simplified }) => {
             className="crypto-card"
             key={currency.uuid}
           >
+
             {/* Note: Change currency.id to currency.uuid  */}
             <Link key={currency.uuid} to={`/crypto/${currency.uuid}`}>
               <Card
